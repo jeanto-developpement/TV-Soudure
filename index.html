@@ -13,7 +13,7 @@
   --bg:#E4EAF0; --panel:#FFFFFF; --panel2:#F3F6F9; --ink:#12202C; --muted:#586A7A; --line:#C6D1DB;
   --brand:#0B63C5; --brand-ink:#FFFFFF;
   --ok:#1E8A3C; --ok-ink:#FFFFFF; --wait:#F2A900; --wait-ink:#1B1400; --block:#C62828; --block-ink:#FFFFFF;
-  --abs:#78858F; --abs-ink:#FFFFFF; --done:#0E7490; --done-ink:#FFFFFF; --warn-text:#9A5B00;
+  --abs:#78858F; --abs-ink:#FFFFFF; --done:#5B6770; --done-ink:#FFFFFF; --warn-text:#9A5B00;
   --display:"Barlow Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
   --body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
   box-sizing:border-box;
@@ -84,7 +84,6 @@ main{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;min-height:0}
 .now .op{font-size:1.3rem;font-weight:500;line-height:1.25}
 .now .op em{font-style:normal;font-weight:600;color:var(--brand)}
 .now .cage{font-size:1.15rem;color:var(--muted);line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.s-abs .now .proj{color:var(--muted)}
 
 .nxt{display:grid;grid-template-rows:1fr 1fr;border-left:1px solid var(--line);min-width:0}
 .job{padding:.45rem .8rem;display:flex;flex-direction:column;justify-content:center;gap:.1rem;min-width:0}
@@ -98,8 +97,23 @@ main{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;min-height:0}
 .job.empty .p{color:var(--muted);font-weight:500}
 .job.flag{background:repeating-linear-gradient(135deg,transparent 0 .6rem,color-mix(in srgb,var(--wait) 16%,transparent) .6rem 1.2rem)}
 .job.flag .p{color:var(--warn-text);font-weight:600}
-.card.s-abs{opacity:.72}
+.card.s-abs{background:#E04B4B;border-color:#E04B4B;color:#fff}
+.card.s-abs .strip{background:#A82424}
+.card.s-abs .who{border-right-color:rgba(255,255,255,.4)}
+.card.s-abs .chip{background:#fff;color:#A82424}
+.card.s-abs .lbl,.card.s-abs .now .proj,.card.s-abs .now .op,.card.s-abs .who .nm{color:#fff}
 .card.s-abs .nxt{visibility:hidden}
+
+/* couleur du projet, comme les règles de mise en forme du fichier Excel */
+.tint{background:var(--pbg)}
+.tint .proj,.tint .p{color:var(--pfg)}
+.tint .lbl,.tint .op,.tint .cage,.tint .o{color:color-mix(in srgb,var(--pfg) 70%,#000)}
+.tint .fin{color:var(--pfg)}
+.tint .n{color:color-mix(in srgb,var(--pfg) 70%,#000)}
+.quote.tint{padding:.35rem .55rem;border-radius:.35rem}
+.quote.tint b{color:var(--pfg)}
+.quote.tint{color:color-mix(in srgb,var(--pfg) 70%,#000)}
+.fin.late{display:inline-block;align-self:flex-start;background:#C00000;color:#fff;padding:.15rem .6rem;border-radius:.3rem}
 
 /* ---------- pied ---------- */
 .foot{display:flex;justify-content:space-between;font-size:.95rem;color:var(--muted);padding:0 .2rem}
@@ -149,6 +163,21 @@ let lastOk = new Date("2026-11-23T18:41+00:00");
 let live = false, lastError = false, lastErr = "", usingCsv = false;
 
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null&&text!=='')n.textContent=text;return n;};
+const PROJ=[['svl pecos','#FCE4EC','#D6007E'],['msk','#EADCF4','#7030A0'],['tundra','#D5F2F2','#008080'],
+  ['edge','#DDF1FB','#0070C0'],['daikin 2','#FDE6D2','#C55A11'],['daikin #2','#FDE6D2','#C55A11'],['flapping','#E3F5C8','#3A7D00']];
+function paint(node,name){
+  if(!name) return;
+  const n=name.toLowerCase(); let c=['','#E6D5C3','#5C3A1E'];
+  for(const r of PROJ){ if(n.includes(r[0])){c=r;break;} }
+  node.style.setProperty('--pbg',c[1]); node.style.setProperty('--pfg',c[2]); node.classList.add('tint');
+}
+const MOIS_C=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+function isLate(label){
+  const m=(label||'').match(/^(\d{1,2})\s+(.+)$/); if(!m) return false;
+  const i=MOIS_C.indexOf(m[2]); if(i<0) return false;
+  const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  return new Date(now.getFullYear(),i,+m[1])<today;
+}
 const kind=s=>/absent/i.test(s)?'abs':/bloqu/i.test(s)?'block':/attente/i.test(s)?'wait':/marche/i.test(s)?'ok':/termin/i.test(s)?'done':'';
 const opLine=j=>{
   const d=el('div','op'); const parts=[];
@@ -161,6 +190,7 @@ const opLine=j=>{
 function nextJob(j,flagIfEmpty){
   const k=kind(j.status);
   const box=el('div','job'+(j.project?(k?' j-'+k:''):' empty')+((!j.project&&flagIfEmpty)?' flag':''));
+  paint(box,j.project);
   if(!j.project){
     box.append(el('div','p',flagIfEmpty?'Aucun job suivant':'—'));
     return box;
@@ -180,19 +210,20 @@ function card(e){
   c.append(el('div','strip'));
   const who=el('div','who'); who.append(el('div','nm',e.name),el('div','chip',e.status||'—'));
   if(e.quote.project||e.quote.drawing){
-    const q=el('div','quote'); q.append(el('b',null,e.quote.project||''));
+    const q=el('div','quote'); paint(q,e.quote.project); q.append(el('b',null,e.quote.project||''));
     q.append([e.quote.drawing?'Dessin '+e.quote.drawing:'',e.quote.note].filter(Boolean).join(' · '));
     who.append(q);
   }
   c.append(who);
   const now=el('div','now');
+  if(!absent) paint(now,e.cur.project);
   if(absent){
     now.append(el('div','lbl','Absent'),el('div','proj','Hors quart'),el('div','op',e.cur.note||''));
   }else{
     now.append(el('div','lbl',k==='done'?'Terminé – prochain job à lancer':'En cours'));
     now.append(el('div','proj',e.cur.project||'Aucun job assigné'));
     const op=opLine(e.cur); if(op.textContent)now.append(op);
-    if(e.cur.date)now.append(el('div','fin','Fin prévue '+e.cur.date));
+    if(e.cur.date){const late=isLate(e.cur.date)&&k!=='done'; now.append(el('div','fin'+(late?' late':''),'Fin prévue '+e.cur.date+(late?' – en retard':'')));}
     else if(e.cur.note)now.append(el('div','fin',e.cur.note));
     if(e.cur.cage)now.append(el('div','cage','Cage '+e.cur.cage));
   }
