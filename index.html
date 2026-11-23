@@ -13,7 +13,7 @@
   --bg:#E4EAF0; --panel:#FFFFFF; --panel2:#F3F6F9; --ink:#12202C; --muted:#586A7A; --line:#C6D1DB;
   --brand:#0B63C5; --brand-ink:#FFFFFF;
   --ok:#1E8A3C; --ok-ink:#FFFFFF; --wait:#F2A900; --wait-ink:#1B1400; --block:#C62828; --block-ink:#FFFFFF;
-  --abs:#78858F; --abs-ink:#FFFFFF; --done:#5B6770; --done-ink:#FFFFFF; --warn-text:#9A5B00;
+  --grid:#26343F; --abs:#78858F; --abs-ink:#FFFFFF; --done:#5B6770; --done-ink:#FFFFFF; --warn-text:#9A5B00;
   --display:"Barlow Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
   --body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
   box-sizing:border-box;
@@ -22,12 +22,12 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0D151D; --panel:#162330; --panel2:#1C2C3B; --ink:#EAF0F5; --muted:#9DB0C0; --line:#2B3E50;
-    --brand:#3D8EE8; --wait-ink:#1B1400; --warn-text:#F2B84B;
+    --brand:#3D8EE8; --wait-ink:#1B1400; --warn-text:#F2B84B; --grid:#6C8091;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0D151D; --panel:#162330; --panel2:#1C2C3B; --ink:#EAF0F5; --muted:#9DB0C0; --line:#2B3E50;
-  --brand:#3D8EE8; --wait-ink:#1B1400; --warn-text:#F2B84B;
+  --brand:#3D8EE8; --wait-ink:#1B1400; --warn-text:#F2B84B; --grid:#6C8091;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;font-size:min(0.8333vw,1.4815vh)}
@@ -55,65 +55,59 @@ body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);o
 .clock .t{font-size:3.2rem;line-height:1;font-variant-numeric:tabular-nums}
 .clock .d{font-family:var(--body);font-weight:500;font-size:1.05rem;color:var(--muted);margin-top:.25rem}
 
-/* ---------- colonnes par quart ---------- */
-main{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;min-height:0}
-.shift{display:grid;grid-template-rows:auto repeat(4,minmax(0,1fr));gap:.6rem;min-height:0}
-.shift h2{font-family:var(--display);font-weight:700;font-size:1.7rem;line-height:1;display:flex;align-items:baseline;gap:.6rem}
-.shift h2 span{font-family:var(--body);font-weight:500;font-size:1.05rem;color:var(--muted)}
+/* ---------- tableau, comme le fichier Excel ---------- */
+main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:.9rem;min-height:0}
+.tbl{display:grid;grid-template-rows:auto;grid-auto-rows:minmax(0,1fr);min-height:0;border:2px solid var(--grid);border-radius:.35rem;overflow:hidden;background:var(--panel)}
+.row{display:grid;grid-template-columns:9rem minmax(0,34fr) minmax(0,30fr) minmax(0,30fr);min-height:0;border-top:2px solid var(--grid)}
+.row.head{border-top:0}
+.hd{font-weight:700;font-size:1.25rem;padding:.5rem .8rem;color:#fff;display:flex;align-items:center;justify-content:center;gap:.5rem;letter-spacing:.01em}
+.hd-emp{background:#1F3864}.hd-cur{background:#00703C}.hd-n1{background:#BF8F00}.hd-n2{background:#FFE699;color:#4D3B00}
 
-/* ---------- carte employé ---------- */
-.card{display:grid;grid-template-columns:.8rem 10.4rem minmax(0,1fr) 23.5rem;min-height:0;
-  background:var(--panel);border:1px solid var(--line);border-radius:.5rem;overflow:hidden}
-.strip{background:var(--abs)}
-.card.s-ok .strip{background:var(--ok)} .card.s-wait .strip{background:var(--wait)}
-.card.s-done .strip{background:var(--done)} .card.s-block .strip{background:var(--block)} .card.s-abs .strip{background:var(--abs)}
-.who{padding:.7rem .8rem .6rem 1rem;display:flex;flex-direction:column;gap:.5rem;min-width:0;border-right:1px solid var(--line)}
-.who .nm{font-family:var(--display);font-weight:700;font-size:2.15rem;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.chip{align-self:flex-start;font-weight:600;font-size:1.05rem;line-height:1;padding:.4rem .65rem;border-radius:99rem;
-  background:var(--abs);color:var(--abs-ink);white-space:nowrap}
-.s-done .chip{background:var(--done);color:var(--done-ink)} .s-ok .chip{background:var(--ok);color:var(--ok-ink)} .s-wait .chip{background:var(--wait);color:var(--wait-ink)}
-.s-block .chip{background:var(--block);color:var(--block-ink)}
-.quote{margin-top:auto;font-size:1rem;line-height:1.25;color:var(--muted)}
-.quote b{display:block;font-weight:600;color:var(--ink);font-size:1.1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;padding:.3rem .4rem;min-width:0;background:#FFF2CC;color:#1B2733}
+.row.nuit .who{background:#DCDCF2}
+.who .ic{font-size:1.7rem;line-height:1}
+.who .nm{font-family:var(--display);font-weight:700;font-size:2.1rem;line-height:1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-.now{padding:.7rem 1rem .6rem;display:flex;flex-direction:column;justify-content:center;gap:.35rem;min-width:0}
-.lbl{font-size:1rem;font-weight:600;color:var(--muted)}
-.now .proj{font-family:var(--display);font-weight:700;font-size:2.7rem;line-height:1.02;
-  overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2}
-.now .fin{font-size:1.2rem;font-weight:600;color:var(--brand);line-height:1.25}
-.now .op{font-size:1.3rem;font-weight:500;line-height:1.25}
-.now .op em{font-style:normal;font-weight:600;color:var(--brand)}
-.now .cage{font-size:1.15rem;color:var(--muted);line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-.nxt{display:grid;grid-template-rows:1fr 1fr;border-left:1px solid var(--line);min-width:0}
-.job{padding:.45rem .8rem;display:flex;flex-direction:column;justify-content:center;gap:.1rem;min-width:0}
-.job + .job{border-top:1px solid var(--line)}
-.job .p{font-weight:600;font-size:1.5rem;line-height:1.15;display:flex;gap:.45rem;align-items:center;min-width:0}
-.job .p i{flex:none;width:.9rem;height:.9rem;border-radius:50%;background:var(--line)}
-.job .p span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.job.j-done .p i{background:var(--done)} .job.j-wait .p i{background:var(--wait)} .job.j-block .p i{background:var(--block)} .job.j-ok .p i{background:var(--ok)}
-.job .o{font-size:1.1rem;color:var(--muted);line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.job .n{font-size:1.1rem;font-weight:600;color:var(--warn-text);line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.job.empty .p{color:var(--muted);font-weight:500}
-.job.flag{background:repeating-linear-gradient(135deg,transparent 0 .6rem,color-mix(in srgb,var(--wait) 16%,transparent) .6rem 1.2rem)}
-.job.flag .p{color:var(--warn-text);font-weight:600}
-.card.s-abs{background:#E04B4B;border-color:#E04B4B;color:#fff}
-.card.s-abs .strip{background:#A82424}
-.card.s-abs .who{border-right-color:rgba(255,255,255,.4)}
-.card.s-abs .chip{background:#fff;color:#A82424}
-.card.s-abs .lbl,.card.s-abs .now .proj,.card.s-abs .now .op,.card.s-abs .who .nm{color:#fff}
-.card.s-abs .nxt{visibility:hidden}
+.blk{border-left:2px solid var(--grid);padding:.3rem .7rem .3rem .5rem;display:flex;flex-direction:column;justify-content:space-between;min-width:0;min-height:0;overflow:hidden}
+.ln{display:grid;grid-template-columns:6.6rem minmax(0,1fr);column-gap:.6rem;align-items:center;min-height:0}
+.k{text-align:right;font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap}
+.v{display:flex;align-items:center;gap:.5rem;min-width:0;font-size:1.08rem;line-height:1.25}
+.v>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pn{font-size:1.35rem;font-weight:700;line-height:1.2}
+.qty{margin-left:auto;font-weight:600;flex:none}
+.v .st{margin-left:auto;flex:none}
+.st{font-size:.95rem;font-weight:700;padding:.12rem .6rem;border-radius:99rem;white-space:nowrap;display:inline-flex;gap:.35rem;align-items:center;background:#fff;color:#333}
+.st::before{content:"";width:.7rem;height:.7rem;border-radius:50%;background:currentColor}
+.st-ok{background:#C6EFCE;color:#006100}.st-wait{background:#FFEB9C;color:#9C5700}
+.st-block{background:#FFC7CE;color:#9C0006}.st-done{background:#D9D9D9;color:#404040}.st-abs{background:#fff;color:#A82424}
+.late{background:#C00000;color:#fff;padding:.05rem .55rem;border-radius:.3rem;font-weight:700;overflow:visible!important}
+.note{font-weight:600;color:var(--warn-text)}
 
 /* couleur du projet, comme les règles de mise en forme du fichier Excel */
 .tint{background:var(--pbg)}
-.tint .proj,.tint .p{color:var(--pfg)}
-.tint .lbl,.tint .op,.tint .cage,.tint .o{color:color-mix(in srgb,var(--pfg) 70%,#000)}
-.tint .fin{color:var(--pfg)}
-.tint .n{color:color-mix(in srgb,var(--pfg) 70%,#000)}
-.quote.tint{padding:.35rem .55rem;border-radius:.35rem}
-.quote.tint b{color:var(--pfg)}
-.quote.tint{color:color-mix(in srgb,var(--pfg) 70%,#000)}
-.fin.late{display:inline-block;align-self:flex-start;background:#C00000;color:#fff;padding:.15rem .6rem;border-radius:.3rem}
+.tint .pn{color:var(--pfg)}
+.tint .k,.tint .v{color:color-mix(in srgb,var(--pfg) 72%,#000)}
+.tint .pn{color:var(--pfg)}
+.tint .note{color:color-mix(in srgb,var(--pfg) 72%,#000)}
+.blk.flag{background:repeating-linear-gradient(135deg,transparent 0 .6rem,color-mix(in srgb,var(--wait) 16%,transparent) .6rem 1.2rem)}
+.blk.flag .pn{color:var(--warn-text);font-size:1.2rem}
+
+/* employé absent : toute la ligne en rouge, comme dans Excel */
+.row.abs .who,.row.abs .blk{background:#E04B4B;color:#fff}
+.row.abs .k,.row.abs .v,.row.abs .pn,.row.abs .note,.row.abs .who .nm{color:#fff}
+.row.abs .st{background:#fff;color:#A82424}
+
+/* ---------- panneau des quotes ---------- */
+.side{display:flex;flex-direction:column;gap:.55rem;min-height:0}
+.side h2{font-family:var(--display);font-weight:700;font-size:1.7rem;line-height:1}
+.side h2 span{display:block;font-family:var(--body);font-weight:500;font-size:1.05rem;color:var(--muted);margin-top:.25rem}
+.qtile{flex:1 1 0;max-height:10rem;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:.3rem;
+  padding:.6rem .85rem;border:1px solid var(--line);border-radius:.5rem;background:var(--panel)}
+.qtile.tint{background:var(--pbg)}
+.qtile b{font-size:1.35rem;font-weight:600;line-height:1.15;overflow-wrap:anywhere}
+.qtile span{font-size:1.05rem;line-height:1.25;color:var(--muted);overflow-wrap:anywhere}
+.qtile.tint b{color:var(--pfg)}
+.qtile.tint span{color:color-mix(in srgb,var(--pfg) 70%,#000)}
 
 /* ---------- pied ---------- */
 .foot{display:flex;justify-content:space-between;font-size:.95rem;color:var(--muted);padding:0 .2rem}
@@ -124,9 +118,9 @@ main{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;min-height:0}
   html{font-size:15px} body{height:auto;overflow:auto;display:block;padding:.6rem}
   body>*+*{margin-top:.7rem}
   .top{grid-template-columns:1fr;gap:.7rem} .kpis{flex-wrap:wrap} .clock{text-align:left}
-  main{grid-template-columns:1fr} .shift{grid-template-rows:none}
-  .card{grid-template-columns:.6rem 1fr;} .who,.now,.nxt{grid-column:2} .who{border-right:0}
-  .strip{grid-row:1 / span 3} .nxt{border-left:0;border-top:1px solid var(--line)} .now .proj{font-size:2.4rem}
+  main{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr} .row.head{display:none}
+  .blk{border-left:0;border-top:1px solid var(--grid);gap:.2rem}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -141,8 +135,8 @@ main{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;min-height:0}
 </header>
 
 <main>
-  <section class="shift" id="jour"></section>
-  <section class="shift" id="nuit"></section>
+  <section class="tbl" id="tbl"></section>
+  <aside class="side" id="side"></aside>
 </main>
 
 <footer class="foot"><span id="stamp"></span><span id="stale"></span></footer>
@@ -179,59 +173,49 @@ function isLate(label){
   return new Date(now.getFullYear(),i,+m[1])<today;
 }
 const kind=s=>/absent/i.test(s)?'abs':/bloqu/i.test(s)?'block':/attente/i.test(s)?'wait':/marche/i.test(s)?'ok':/termin/i.test(s)?'done':'';
-const opLine=j=>{
-  const d=el('div','op'); const parts=[];
-  if(j.op)parts.push(j.op);
-  if(j.qty)parts.push('Qté : '+j.qty);
-  d.append(parts.join(' · '));
-  return d;
-};
-
-function nextJob(j,flagIfEmpty){
+const SHORT={wait:'Attente'};
+function line(label){
+  const row=el('div','ln'), v=el('div','v');
+  row.append(el('div','k',label),v); return {row,v};
+}
+function block(j,mode,opts){
+  const next=mode==='next', b=el('div','blk');
   const k=kind(j.status);
-  const box=el('div','job'+(j.project?(k?' j-'+k:''):' empty')+((!j.project&&flagIfEmpty)?' flag':''));
-  paint(box,j.project);
-  if(!j.project){
-    box.append(el('div','p',flagIfEmpty?'Aucun job suivant':'—'));
-    return box;
+  if(!opts.absent) paint(b,j.project);
+  const empty=!j.project;
+  const flag=empty&&next&&opts.flagEmpty;
+  if(flag) b.classList.add('flag');
+  // Projet + statut
+  const l1=line('Projet :'); l1.v.append(el('span','pn',j.project||(flag?'Aucun job suivant':'')));
+  if(j.status&&(mode==='cur'||j.project)){
+    const label=(next&&SHORT[k])||j.status;
+    l1.v.append(el('span','st st-'+(k||'ok'),label));
   }
-  const p=el('div','p'); p.append(el('i'),el('span',null,j.project)); box.append(p);
-  const o=[j.op,j.qty?'Qté : '+j.qty:''].filter(Boolean).join(' · ');
-  if(o)box.append(el('div','o',o));
-  if(j.note)box.append(el('div','n',j.note));
-  else{const l=[j.date?'Début '+j.date:'',j.cage?'Cage '+j.cage:''].filter(Boolean).join(' · ');
-    if(l)box.append(el('div','o',l));}
-  return box;
+  // Cage
+  const l2=line('Cage :'); if(j.cage) l2.v.append(el('span',null,j.cage));
+  // Opération + quantité
+  const l3=line('Opération :'); if(j.op) l3.v.append(el('span',null,j.op));
+  if(j.qty) l3.v.append(el('span','qty','Qté : '+j.qty));
+  // Date / note
+  const l4=line(next?'Début prévu :':'Fin prévue :');
+  if(j.date){
+    const late=!next&&isLate(j.date)&&k!=='done'&&!opts.absent;
+    l4.v.append(el('span',late?'late':null,j.date+(late?' – en retard':'')));
+  }
+  if(j.note) l4.v.append(el('span','note',j.note));
+  b.append(l1.row,l2.row,l3.row,l4.row);
+  return b;
 }
-
-function card(e){
+function rowEl(e){
   const k=kind(e.status), absent=k==='abs';
-  const c=el('article','card s-'+(k||'ok'));
-  c.append(el('div','strip'));
-  const who=el('div','who'); who.append(el('div','nm',e.name),el('div','chip',e.status||'—'));
-  if(e.quote.project||e.quote.drawing){
-    const q=el('div','quote'); paint(q,e.quote.project); q.append(el('b',null,e.quote.project||''));
-    q.append([e.quote.drawing?'Dessin '+e.quote.drawing:'',e.quote.note].filter(Boolean).join(' · '));
-    who.append(q);
-  }
-  c.append(who);
-  const now=el('div','now');
-  if(!absent) paint(now,e.cur.project);
-  if(absent){
-    now.append(el('div','lbl','Absent'),el('div','proj','Hors quart'),el('div','op',e.cur.note||''));
-  }else{
-    now.append(el('div','lbl',k==='done'?'Terminé – prochain job à lancer':'En cours'));
-    now.append(el('div','proj',e.cur.project||'Aucun job assigné'));
-    const op=opLine(e.cur); if(op.textContent)now.append(op);
-    if(e.cur.date){const late=isLate(e.cur.date)&&k!=='done'; now.append(el('div','fin'+(late?' late':''),'Fin prévue '+e.cur.date+(late?' – en retard':'')));}
-    else if(e.cur.note)now.append(el('div','fin',e.cur.note));
-    if(e.cur.cage)now.append(el('div','cage','Cage '+e.cur.cage));
-  }
-  c.append(now);
-  const nx=el('div','nxt'); nx.append(nextJob(e.next[0],!absent),nextJob(e.next[1],false)); c.append(nx);
-  return c;
+  const r=el('div','row '+e.shift+(absent?' abs':''));
+  const who=el('div','who'); who.append(el('div','ic',e.shift==='nuit'?'🌙':'☀️'),el('div','nm',e.name));
+  r.append(who);
+  r.append(block(e.cur,'cur',{absent}));
+  r.append(block(e.next[0],'next',{absent,flagEmpty:!absent}));
+  r.append(block(e.next[1],'next',{absent}));
+  return r;
 }
-
 function kpi(cls,n,label){const k=el('div','kpi '+cls);k.append(el('b',null,String(n)),el('span',null,label));return k;}
 
 function render(){
@@ -249,12 +233,11 @@ function render(){
     kpi(wait?'k-wait':'k-zero',wait,'Attente matériel'),
     kpi(blk?'k-block':'k-zero',blk,'Bloqués'),
     kpi(nonext?'k-flag':'k-zero',nonext,'Sans job suivant'));
-  for(const s of ['jour','nuit']){
-    const list=DATA.filter(e=>e.shift===s), box=document.getElementById(s);
-    const h=el('h2',null,s==='jour'?'Quart de jour':'Quart de nuit');
-    h.append(el('span',null,list.filter(e=>kind(e.status)!=='abs').length+' présent(s) sur '+list.length));
-    box.replaceChildren(h,...list.map(card));
-  }
+  const head=el('div','row head');
+  [['EMPLOYÉ','hd-emp',''],['JOB EN COURS','hd-cur','▶'],['JOB SUIVANTE #1','hd-n1','⏭'],['JOB SUIVANTE #2','hd-n2','⏭']]
+    .forEach(([txt,cls,ic])=>head.append(el('div','hd '+cls,(ic?ic+'  ':'')+txt)));
+  document.getElementById('tbl').replaceChildren(head,...DATA.map(rowEl));
+  renderQuotes();
 }
 
 /* ---------- lecture de la feuille Excel / Google Sheets ---------- */
@@ -329,11 +312,37 @@ async function load(){
     const rows=await readRows(); if(!rows) return;
     const d=fromRows(rows);
     if(!d.length) throw new Error('feuille vide');
-    DATA=d; lastOk=new Date(); live=true; lastError=false; render();
+    DATA=d; lastOk=new Date(); live=true; lastError=false; render(); fit();
   }catch(e){ lastError=true; lastErr=String((e&&e.message)||e); }
   tick();
 }
 
+function fit(){
+  document.querySelectorAll('.pn').forEach(p=>{
+    p.style.fontSize='';
+    let s=parseFloat(getComputedStyle(p).fontSize); const min=s*0.55;
+    while(p.scrollWidth>p.clientWidth+1&&s>min){s-=1;p.style.fontSize=s+'px';}
+  });
+}
+function renderQuotes(){
+  const seen=new Map();
+  for(const e of DATA){
+    const q=e.quote; if(!q.project&&!q.drawing) continue;
+    const key=(q.project+'|'+q.drawing).toLowerCase();
+    if(!seen.has(key)) seen.set(key,{project:q.project,drawing:q.drawing,notes:[]});
+    if(q.note&&!seen.get(key).notes.includes(q.note)) seen.get(key).notes.push(q.note);
+  }
+  const side=document.getElementById('side');
+  const h=el('h2',null,'Quotes de référence'); h.append(el('span',null,'Dessins à consulter'));
+  const tiles=[...seen.values()].map(q=>{
+    const d=el('div','qtile'); paint(d,q.project);
+    d.append(el('b',null,q.project||'—'));
+    if(q.drawing) d.append(el('span',null,'Dessin '+q.drawing));
+    q.notes.forEach(n=>d.append(el('span',null,n)));
+    return d;
+  });
+  side.replaceChildren(h,...tiles);
+}
 function tick(){
   const now=new Date();
   document.getElementById('time').textContent=now.toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit',hour12:false});
@@ -349,7 +358,7 @@ function tick(){
     st.textContent=(lastError&&usingCsv)?'Lecture de la feuille impossible ('+lastErr+') – vérifier le lien CSV et l’onglet publié':''; st.className=st.textContent?'stale':'';
   }
 }
-render(); tick(); load(); setInterval(tick,15000); setInterval(load,REFRESH_SECONDS*1000);
+render(); fit(); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit); addEventListener('resize',fit); tick(); load(); setInterval(tick,15000); setInterval(load,REFRESH_SECONDS*1000);
 </script>
 </body>
 </html>
