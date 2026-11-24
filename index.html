@@ -121,7 +121,13 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:.9rem;min-height
 .qtile.tint span{color:color-mix(in srgb,var(--pfg) 70%,#000)}
 
 /* ---------- pied ---------- */
-.foot{display:flex;justify-content:space-between;font-size:.95rem;color:var(--muted);padding:0 .2rem}
+.foot{display:flex;align-items:center;gap:1rem;font-size:.95rem;color:var(--muted);padding:0 .2rem}
+.foot #stale{flex:1;text-align:center}
+.foot #stamp{flex:none}
+#swap{font:600 1.05rem var(--body);padding:.3rem 1.1rem;border-radius:99rem;border:2px solid var(--brand);background:var(--brand);color:#fff;cursor:pointer;white-space:nowrap}
+#swap.back{background:var(--panel);color:var(--brand)}
+#swap:focus-visible{outline:3px solid var(--wait);outline-offset:2px}
+#swap[hidden]{display:none}
 .foot .stale{color:var(--block);font-weight:600}
 
 /* ---------- petits écrans (téléphone) ---------- */
@@ -150,7 +156,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:.9rem;min-height
   <aside class="side" id="side"></aside>
 </main>
 
-<footer class="foot"><span id="stamp"></span><span id="stale"></span></footer>
+<footer class="foot"><span id="stamp"></span><span id="stale"></span><button id="swap" type="button" autofocus></button></footer>
 
 <script>
 /* ============ RÉGLAGE : lien CSV publié de l’onglet « Dashboard Production v2 » ============
@@ -167,6 +173,7 @@ const REFRESH_SECONDS = 60;
 const DAY_START = 3*60;          // 3 h 00
 const NIGHT_START = 14*60+30;    // 14 h 30
 const TIMEZONE = "America/Toronto";
+const OVERRIDE_MINUTES = 3;     // après un clic sur le bouton, retour automatique au quart actuel au bout de 3 min
 
 /* Instantané de démonstration, utilisé tant que le lien CSV n’est pas configuré */
 let DATA = [{"name": "Steve", "shift": "jour", "status": "En marche", "cur": {"project": "SVL Pecos", "cage": "176820-1 à 8 · Spool #4 p.14", "op": "Assemblage pipings", "qty": 8, "status": "En marche"}, "next": [{"project": "Daikin 2 QTS", "cage": "176270-4-5", "op": "Assemblage pipings", "qty": null, "status": ""}, {"project": "Hoffman Hydronics", "cage": "177 863-3 · Spool", "op": "Assemblage pipings", "qty": 31, "status": "Attente matériel", "note": "Livraison fittings prévue 1 déc."}], "quote": {"project": "SVL Pecos", "drawing": "173758-1", "note": ""}}, {"name": "Mikaël", "shift": "jour", "status": "En marche", "cur": {"project": "SVL Pecos", "cage": "176820-1 à 8 · Spool #4 p.14", "op": "Assemblage pipings", "qty": 8, "status": "En marche"}, "next": [{"project": "", "cage": "", "op": "", "qty": null, "status": ""}, {"project": "", "cage": "", "op": "", "qty": null, "status": ""}], "quote": {"project": "SVL MSK2", "drawing": "175447-3", "note": ""}}, {"name": "Alex", "shift": "jour", "status": "En marche", "cur": {"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication panneaux", "qty": 12, "status": "En marche"}, "next": [{"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication supports", "qty": 24, "status": ""}, {"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication Skid complet", "qty": 12, "status": ""}], "quote": {"project": "Daikin 2 QTS", "drawing": "176269-1", "note": ""}}, {"name": "Robert", "shift": "jour", "status": "En marche", "cur": {"project": "Établis Assemblage Système", "cage": "", "op": "Fabrication", "qty": 3, "status": "En marche", "date": "27 nov."}, "next": [{"project": "SVL CB Tundra", "cage": "", "op": "Fabrication bases", "qty": 12, "status": "Attente matériel", "note": "Livraison métal prévue 23 nov."}, {"project": "Daikin Edge Connex", "cage": "", "op": "", "qty": null, "status": ""}], "quote": {"project": "Daikin Edge Connex", "drawing": "174778-1", "note": ""}}, {"name": "Fester", "shift": "nuit", "status": "En marche", "cur": {"project": "Daikin 2 QTS", "cage": "176270-2-3", "op": "Soudage pipings", "qty": null, "status": "En marche", "date": "23 nov."}, "next": [{"project": "SVL Pecos", "cage": "176818-1 à 8 · Spool #2 p.13", "op": "Soudage pipings", "qty": 8, "status": "", "date": "23 nov."}, {"project": "SVL Pecos", "cage": "176819-1 à 8             SPOOL#2  p.13", "op": "Soudage pipings", "qty": 8, "status": "", "date": "24 nov."}], "quote": {"project": "HTS Flapping Airplaines", "drawing": "179124-1", "note": ""}}, {"name": "Fang", "shift": "nuit", "status": "En marche", "cur": {"project": "SVL Pecos", "cage": "176 820-1 à 8 · Spool #3 p.14", "op": "", "qty": 16, "status": "En marche", "date": "23 nov."}, "next": [{"project": "SVL Pecos", "cage": "176819-1 à 8      SPOOL#3  p.14", "op": "Soudage pipings", "qty": 8, "status": "", "date": "23 nov."}, {"project": "", "cage": "", "op": "", "qty": null, "status": ""}], "quote": {"project": "SVL CB Tundra", "drawing": "173266-1", "note": ""}}, {"name": "Jeremy", "shift": "nuit", "status": "En marche", "cur": {"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication panneaux", "qty": 12, "status": "En marche"}, "next": [{"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication supports", "qty": 24, "status": ""}, {"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication Skid complet", "qty": 12, "status": ""}], "quote": {"project": "SVL Pecos", "drawing": "173758-1", "note": "Base #45 Next"}}, {"name": "Sam", "shift": "nuit", "status": "Absent", "cur": {"project": "", "cage": "", "op": "", "qty": null, "status": "Absent", "note": "Date de retour à déterminer"}, "next": [{"project": "", "cage": "", "op": "", "qty": null, "status": ""}, {"project": "", "cage": "", "op": "", "qty": null, "status": ""}], "quote": {"project": "", "drawing": "", "note": ""}}];
@@ -239,11 +246,33 @@ function nowParts(){
   const p=new Intl.DateTimeFormat('en-CA',{timeZone:TIMEZONE,hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date());
   return {h:(+p.find(x=>x.type==='hour').value)%24, m:+p.find(x=>x.type==='minute').value};
 }
-function activeShift(){
-  const q=new URLSearchParams(location.search).get('quart');
-  if(q==='jour'||q==='nuit'||q==='tous') return q;
+function autoShift(){
   const {h,m}=nowParts(), mins=h*60+m;
   return (mins>=DAY_START&&mins<NIGHT_START)?'jour':'nuit';
+}
+let override=null, overrideUntil=0;
+const overrideOn=()=>override&&Date.now()<overrideUntil;
+function forcedByUrl(){
+  const q=new URLSearchParams(location.search).get('quart');
+  return (q==='jour'||q==='nuit'||q==='tous')?q:'';
+}
+function activeShift(){
+  const q=forcedByUrl(); if(q) return q;
+  if(overrideOn()) return override;
+  return autoShift();
+}
+function swapShift(){
+  if(overrideOn()){ override=null; }
+  else { override=(activeShift()==='jour')?'nuit':'jour'; overrideUntil=Date.now()+OVERRIDE_MINUTES*60000; }
+  render(); fit();
+}
+function updateSwapButton(){
+  const b=document.getElementById('swap'); if(!b) return;
+  if(forcedByUrl()){ b.hidden=true; return; }
+  b.hidden=false;
+  const on=overrideOn();
+  b.className=on?'back':'';
+  b.textContent=on?'↩ Retour au quart actuel':(shownShift==='jour'?'⇄ Voir le quart de soir':'⇄ Voir le quart de jour');
 }
 let shownShift='';
 function render(){
@@ -251,7 +280,8 @@ function render(){
   let SHOWN=shownShift==='tous'?DATA:DATA.filter(e=>e.shift===shownShift);
   if(!SHOWN.length) SHOWN=DATA;
   document.getElementById('sub').textContent=
-    shownShift==='jour'?'Quart de jour · 3 h à 14 h 29':shownShift==='nuit'?'Quart de soir · 14 h 30 à 2 h 59':'Tous les quarts';
+    (shownShift==='jour'?'Quart de jour · 3 h à 14 h 29':shownShift==='nuit'?'Quart de soir · 14 h 30 à 2 h 59':'Tous les quarts')+(overrideOn()?' · consultation':'');
+  updateSwapButton();
   const pres=SHOWN.filter(e=>kind(e.status)!=='abs');
   const abs=SHOWN.length-pres.length;
   const run=SHOWN.filter(e=>kind(e.status)==='ok').length;
@@ -272,7 +302,7 @@ function render(){
   const tbl=document.getElementById('tbl');
   tbl.classList.toggle('big',SHOWN.length<=5);
   tbl.replaceChildren(head,...SHOWN.map(rowEl));
-  renderQuotes(SHOWN);
+  renderQuotes(DATA);   // toutes les quotes, quel que soit le quart affiché
 }
 
 /* ---------- lecture de la feuille Excel / Google Sheets ---------- */
@@ -306,23 +336,71 @@ function asDate(s){                       // retourne un libellé de date court,
   }
   return '';
 }
+/* Lecture robuste : les colonnes sont repérées par les titres de la ligne d’en-tête
+   (JOB EN COURS, JOB SUIVANTE #1, #2, QUOTE) et chaque valeur par son libellé (Projet, Cage, Opération, Date, Note). */
+let lastDebug={};
 function fromRows(R){
-  const g=(r,c)=>clean((R[r-1]||[])[c]);          // r = numéro de ligne Excel, c = index de colonne (A=0)
-  const out=[];
-  for(let k=0;k<8;k++){
-    const r=6+4*k, raw=g(r,0);
-    if(!raw) continue;
-    const sp=raw.indexOf(' ');
-    const when=(c1,c2)=>{const v=g(r+3,c1)||g(r+3,c2);const d=asDate(v);return !v?{}:d?{date:d}:{note:v.replace(/^Note\s*:\s*/i,'')};};
-    const job=(p,q,c1,c2,st)=>{
-      const m=g(r+2,q).match(/\d+/);
-      return Object.assign({project:g(r,p),cage:g(r+1,p),op:g(r+2,p),qty:m?+m[0]:null,status:dropEmoji(g(r,st))},when(c1,c2));
-    };
-    const cur=job(2,4,2,3,4), n1=job(6,8,6,7,8), n2=job(10,12,10,11,12);
-    out.push({name:sp>0?raw.slice(sp+1).trim():raw, shift:raw.includes('🌙')?'nuit':'jour', status:cur.status,
-      cur, next:[n1,n2],
-      quote:{project:g(r,14),drawing:g(r+1,14).replace(/^Dessin\s*:\s*/i,''),note:[g(r+2,14),g(r+3,14)].filter(Boolean).join(' ')}});
+  const cellAt=(r,c)=>((R[r]||[])[c]||'');
+  // 1) ligne d’en-tête et colonnes des blocs
+  let hr=-1, starts={};
+  for(let r=0;r<Math.min(R.length,15)&&hr<0;r++){
+    (R[r]||[]).forEach((v,c)=>{
+      const s=clean(v);
+      if(/JOB EN COURS/i.test(s)) starts.cur=c;
+      else if(/SUIVANTE\s*#?\s*1/i.test(s)) starts.n1=c;
+      else if(/SUIVANTE\s*#?\s*2/i.test(s)) starts.n2=c;
+      else if(/QUOTE/i.test(s)) starts.q=c;
+    });
+    if(starts.cur!==undefined) hr=r;
   }
+  if(hr<0) return [];
+  const W=Math.max(...R.map(r=>r.length),16);
+  const reg={cur:[starts.cur,starts.n1??starts.cur+4],n1:[starts.n1,starts.n2??starts.n1+4],
+             n2:[starts.n2,starts.q??W],q:[starts.q??W,W]};
+  // 2) début de chaque employé : texte dans la 1re colonne sous l’en-tête
+  const idx=[];
+  for(let r=hr+1;r<R.length;r++){ if(clean(cellAt(r,0))) idx.push(r); }
+  const out=[];
+  idx.forEach((r0,k)=>{
+    const r1=Math.min(idx[k+1]??R.length, r0+6);
+    const raw=clean(cellAt(r0,0));
+    const job=(a,b)=>{
+      const o={project:'',cage:'',op:'',qty:null,status:''};
+      for(let r=r0;r<r1;r++){
+        const cells=[]; for(let c=a;c<b;c++){const s=clean(cellAt(r,c)); if(s) cells.push(s);}
+        if(!cells.length) continue;
+        const lab=cells[0], rest=cells.slice(1);
+        if(/^projet/i.test(lab)){
+          rest.forEach(s=>{ if(/(marche|attente|bloqu|termin|absent)/i.test(s)) o.status=dropEmoji(s); else if(!o.project) o.project=s; });
+        }else if(/cage|identification/i.test(lab)){ o.cage=rest[0]||''; }
+        else if(/^op[ée]ration/i.test(lab)){
+          rest.forEach(s=>{ const m=s.match(/^(?:qty|qté|qte)\s*:?\s*(\d+)/i)||s.match(/^(\d+)\s*x?$/);
+            if(m) o.qty=+m[1]; else if(!o.op) o.op=s; });
+        }else if(/^date/i.test(lab)){
+          rest.forEach(s=>{ const n=s.match(/^note\s*:?\s*(.*)$/i);
+            if(n){ if(n[1]) o.note=n[1]; } else { const d=asDate(s); if(d) o.date=d; else o.note=s; } });
+        }else if(/^note/i.test(lab)){ const n=lab.match(/^note\s*:?\s*(.*)$/i); o.note=[n&&n[1],...rest].filter(Boolean).join(' '); }
+      }
+      if(!o.qty) delete o.qty; else o.qty=+o.qty; if(o.qty===undefined) o.qty=null;
+      return o;
+    };
+    // quote de référence : tout le texte de la colonne QUOTE du bloc (une cellule peut contenir plusieurs lignes)
+    const quote={project:'',drawing:'',note:''}, notes=[];
+    for(let r=r0;r<r1;r++){
+      for(let c=reg.q[0];c<reg.q[1];c++){
+        String(cellAt(r,c)).split(/\n/).map(clean).filter(Boolean).forEach(line=>{
+          const d=line.match(/^dessin\s*:?\s*(.*)$/i);
+          if(d){ if(d[1]&&!quote.drawing) quote.drawing=d[1]; }
+          else if(!quote.project) quote.project=line; else notes.push(line);
+        });
+      }
+    }
+    quote.note=notes.join(' ');
+    const cur=job(...reg.cur), n1=job(...reg.n1), n2=job(...reg.n2);
+    const sp=raw.search(/[\p{L}\p{N}]/u);
+    out.push({name:raw.slice(sp>=0?sp:0), shift:raw.includes('🌙')?'nuit':'jour', status:cur.status, cur, next:[n1,n2], quote});
+  });
+  lastDebug={entete:hr+1,colonnes:starts,lignes:R.length,employes:out.length};
   return out;
 }
 async function getText(url){
@@ -347,7 +425,7 @@ async function load(){
     const rows=await readRows(); if(!rows) return;
     const d=fromRows(rows);
     if(!d.length) throw new Error('feuille vide');
-    DATA=d; lastOk=new Date(); live=true; lastError=false; render(); fit();
+    DATA=d; lastOk=new Date(); live=true; lastError=false; render(); fit(); showDebug();
   }catch(e){ lastError=true; lastErr=String((e&&e.message)||e); }
   tick();
 }
@@ -378,6 +456,14 @@ function renderQuotes(list){
   });
   side.replaceChildren(h,...tiles);
 }
+function showDebug(){
+  if(new URLSearchParams(location.search).get('debug')!=='1') return;
+  let box=document.getElementById('dbg');
+  if(!box){ box=document.createElement('pre'); box.id='dbg';
+    box.style.cssText='position:fixed;left:0;right:0;bottom:0;max-height:45vh;overflow:auto;margin:0;padding:.6rem 1rem;background:#000d;color:#9f9;font:12px/1.35 monospace;z-index:99;white-space:pre-wrap';
+    document.body.append(box); }
+  box.textContent='DIAGNOSTIC '+JSON.stringify(lastDebug)+'\n'+DATA.map(e=>JSON.stringify(e)).join('\n');
+}
 function tick(){
   const now=new Date();
   document.getElementById('time').textContent=now.toLocaleTimeString('fr-CA',{timeZone:TIMEZONE,hour:'2-digit',minute:'2-digit',hour12:false});
@@ -394,6 +480,8 @@ function tick(){
     st.textContent=(lastError&&usingCsv)?'Lecture de la feuille impossible ('+lastErr+') – vérifier le lien CSV et l’onglet publié':''; st.className=st.textContent?'stale':'';
   }
 }
+document.getElementById('swap').addEventListener('click',swapShift);
+addEventListener('keydown',e=>{ if(e.key==='ArrowLeft'||e.key==='ArrowRight'){ e.preventDefault(); swapShift(); } });
 render(); fit(); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit); addEventListener('resize',fit); tick(); load(); setInterval(tick,15000); setInterval(load,REFRESH_SECONDS*1000);
 </script>
 </body>
