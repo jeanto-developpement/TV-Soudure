@@ -35,15 +35,15 @@ body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);o
   display:grid;grid-template-rows:auto 1fr auto;gap:.7rem;padding:.8rem 1rem .5rem}
 
 /* ---------- barre du haut ---------- */
-.top{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:1.4rem;
+.top{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:1.4rem;
   background:var(--panel);border:1px solid var(--line);border-radius:.5rem;padding:.55rem 1.1rem}
 .logo{height:4.2rem;width:auto;display:block;background:#fff;border-radius:.3rem;padding:.2rem .5rem}
 .title{font-family:var(--display);font-weight:700;font-size:2.35rem;line-height:1;letter-spacing:.01em}
-.title small{display:block;font-family:var(--body);font-weight:500;font-size:1.05rem;color:var(--muted);margin-top:.3rem;letter-spacing:0}
+.title small{display:block;white-space:nowrap;font-family:var(--body);font-weight:500;font-size:1.05rem;color:var(--muted);margin-top:.3rem;letter-spacing:0}
 .kpis{display:flex;gap:.6rem}
-.kpi{display:flex;align-items:center;gap:.6rem;min-width:9.6rem;padding:.35rem .8rem;border-radius:.4rem;
+.kpi{display:flex;align-items:center;gap:.6rem;min-width:9.2rem;padding:.35rem .8rem;border-radius:.4rem;
   background:var(--panel2);border:1px solid var(--line)}
-.kpi b{font-family:var(--display);font-weight:700;font-size:2.9rem;line-height:1;min-width:1.5ch;text-align:center}
+.kpi b{font-family:var(--display);font-weight:700;font-size:2.9rem;line-height:1;min-width:1.5ch;text-align:center;white-space:nowrap}
 .kpi span{font-size:1.05rem;line-height:1.15;font-weight:500}
 .kpi.k-pres{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
 .kpi.k-ok{background:var(--ok);border-color:var(--ok);color:var(--ok-ink)}
@@ -82,6 +82,17 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:.9rem;min-height
 .st-block{background:#FFC7CE;color:#9C0006}.st-done{background:#D9D9D9;color:#404040}.st-abs{background:#fff;color:#A82424}
 .late{background:#C00000;color:#fff;padding:.05rem .55rem;border-radius:.3rem;font-weight:700;overflow:visible!important}
 .note{font-weight:600;color:var(--warn-text)}
+
+/* un seul quart affiché : plus de place, donc texte plus grand */
+.tbl.big .pn{font-size:1.7rem}
+.tbl.big .v{font-size:1.2rem}
+.tbl.big .k{font-size:1rem}
+.tbl.big .ln{grid-template-columns:7.6rem minmax(0,1fr)}
+.tbl.big .st{font-size:1.05rem}
+.tbl.big .who .nm{font-size:2.2rem}
+.tbl.big .who .ic{font-size:2.2rem}
+.tbl.big .hd{font-size:1.5rem}
+.tbl.big .blk{padding:.5rem .9rem .5rem .6rem}
 
 /* couleur du projet, comme les règles de mise en forme du fichier Excel */
 .tint{background:var(--pbg)}
@@ -129,7 +140,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:.9rem;min-height
 
 <header class="top">
   <img class="logo" alt="Flo-Fab" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjQAAADJCAMAAAADxljfAAAAulBMVEUgn/8gn+8gj+8ol+8ol/cgl/chnP8lmvQllfQqlfQqle8ol/Mkl/MjmfImmfImmfUmlvIplvUmmfcll/Qll/Iol/Iol/QnmPYnmfYnmfQnlvQkmfQnmvgmmfcmmfUml/Uml/Mol/Mol/UnmPYnmfYnmPQnmPMnl/QlmPQmmPUomPUol/Qml/QnmPUnmPYnmfUnl/UnmPYnmPQnmPUmmfUmmfYmmfQnmPUnmPYnl/Unl/QnmfUAAAAnmPX/aJOfAAAAPXRSTlMQEBAgICAfMDAwMEBAUFBQUFBfYGBgYG9wcHBwb39/gICAgI+PkJCQkJ+foKCvr6+wv7/Pz8/P39/v7+8AB38LQwAAAAlwSFlzAAALEwAACxMBAJqcGAAADn5JREFUeNrt3VtjmsoWAGARmmgxrbtu0+o5Nqa5nJCkSaA2I7rm//+t8zCISGAuOAwMrvXWxgvCx8yaKz26jwmcaGTOgflvpPadrx6iQTSIBtEgGkTTbjTL0YlG4RV0DX2j5Wgwsldwaf4rEQ2iQTSIBtEgGkSDaBANokE0iAbRIBpEg2gwEA2iQTSIBtEgGkSDaBANokE0iAbRIBpEg2gQDaJBNIgG0SAaRINoEA2iQTSIBtEgGkSDaBANokE0iAbRIBpEg2gQDaJBNIgG0WAgGkSDaMygmcAU0SCaGtC8LNschHfoD2XvKryCfu4vJbGudJwnhqbde6xFvEM/K3tX+RUUn4+w0nEiGkRzamiiffiIBtFIoTn4F6JBNKeHZh4EQRAE4cEhb9l/Bk7Zu/x9GELjl38lomkoDn8Hqf5BdaGxOxANokE0iAbRIBpEg2gQDaJBNIgG0SAaRINoEM1poPl0EA6iqX7ySqPonVUfRDX41DSaUbjJvXv1XxfRiKhczG+DkGykZ3FtgsOT6izk31v0ceHL8sJtCI3zu+j95AuiKT9lF7dhpQu+yHzI16PIpCctmLjm0Thls+i+IZricnkRVr/GP9KP+aZvImpY4qY+NI9ln7B1TaNx2o/GWZDjLvAg+SB3Q3VG4JpEc9lcg2O0WOVTqZeJ22Y0o/D4UkF0r2pkUxsa3nSoGhtRzigoudXI7aClaDSQSU+qq3+1BJkYQ9NIX4/LbzeQSQvRuKGeazsGAIBxHYtsbhwzaDzeZyxrqpbEp58s3Jah+a4rB5kBQF2rtYjbUTRurjZ/D+bToff1w+//0SY0Tqjtwi5rRJNT0xk02YopjuY++2GfC+5j4rcGjUuoHWgO1XQEzed9eykOxj3BRblx2oHms87mcb1oDtR0A80+MYjmPYn+ReK2AY1WM3WjyfZ2dQGNE6RkfLn+xWwPamNoNHfD1Y2GvnQJjbsqJgPfZUdr6kFzG6ZxU3M+YwTN/kbThSZ/Gs2h2Z38eKJ2J9/UjSbiv2hFbUOzdbqCZmfmqZf/i6g1GzSK5ie1Dg296giaxEw8Uxn8kldTGxr93f0G0OyKGsvRJGbW3sc/SaQMCw1o/pROqOOiITai2RU1ymg2pDAaQsOqoL8eVChoZNpQmk52WOno2oeGVEQjeYbMoGGJwd8eQMVbedAQGmInGurbj4bdr+seVCxoxPOzakJTQ0FjBs2V9WhYQlOUzwh2NyrssTKJJmoGTSDaP/L3u9QPsRnNI6WUxoVm5BsnXxpAI3V0JLibT3MRH4dGYqR2uOa3n2xHw8r4mepk07IeK4No7oVviK8LLzCpHQ30+Z2OZ5ajIZy+FoWZslfm0QjT4Lse5yfXi4Z/5VjLwV40P8sTGoB3heN1TaM5FxUzPvc+qRkNP+EaW42GZcETDRc7MI1mzn9x2Y1gCs1c2LdrLRpW0FQqYhWKmlrQvPLLGQ+aRTPtLhpuQaOG5sEwmrjKOI05NKPOornkFTSKaDgNqDrQjCpXli0oaazOabgFjSKakmZ7XWj4KY3XOJpH4UdYiuacW9CoXuzQKBpu6+QNGkfD7RBwLEbzKCjJFQcEz0yiqZzRmEHzs7M9wiTtaCqO5yrjcGbQ8FMap2k0t1RcENqJRlQ7qf6Q0CCa+2oVpQ40/xFtnnYh2kNrYjGauaClDP1Y7Zgdc2iiI87MkWiOD89iNK/CwvZe7ZjHxtD06REVSNNoAptn7sXC6t9XO+YHY2jG4jyzvWg8i9G4lFL6h/+aJ6VjfjOG5piUpmk0u+aqlWhGopRGOavZGkPzXq2XsRVoPJvRzGVO8ExHJqwdDX/S3qDVaH6BzWjupTodlHLhgSE03JRmDW1G8xusRvPK7cVNQ2W19NgQmsfqYwgNo8ks+rASTUSpzJOJ+wpqJobQkOpjCM2iyU4NsxLNu0TrFADAk1czM4PGlUo024jmxbUcDaGSe9fLlzVLM2i4qyT+QJurp8zuYd1GA966XWheZbpBWpoIb/0TQSOtxhAaUmUsozX9NN9OBA14cYvQnFfpK2oPmu3gRNDAsEWJ8PyYMYQWjD0leY0ymli0PU17mtwqXcNmmtzcaREP7UdTdQOASfllNIbmWa4wV+ka9quiWU3LgnxEw60qS7aLKrs3G0HDtoGyEs29zDiNWsO78jCCyp57ozovpxk0W8dWNHOp7tNMWiNOhsEEmqX9aOiVPjTPmTL0pXY0vmQKkIbwVP4xgibqAJqtUwGN5AWvFU1fsrEhP3b5ZgJNn3YADfUtRQOEinYjUpz9OasBTc/bR/0pjZbt05bLIIrFP9hONM+cBo/wtldoPOl9oMZ902jkztjlWlQ/2YlGuIRFtagBE2je7UAjGnrxLUXjUSo3OUKyqAlNoKk3pdGIRjD0MrMUDbtpfW1FzcQEmrE1aASZka1olpQK9wDOBe/u8UygebQHzTm/e8JSNJ7ksLBcGnrMViNhS1IarWi4dxixFQ1LUa5U3jGtUDvpRONSi9BwM0Br0YypaldN+REdtTmSNJpLm9A8dxINK0BvtCQ1P4ygeTxhNEFL0Cyp2lB3+WQUzr69OtGQE66e2oKGrdVWGYAqS0R/gQk059QmNO/dRJNMyPtxNBpeQaMRzaVVaLjjCBajgTWllG7dY6unCRhB82oTmkvN/TTtQcP6eFeyLai+ctNJK5rYJjSE/4stRpN018m2oEaKncF60dSe0uhEw39m+IPVaPpsNHYh9+pH5SxYJ5q5RWgEz5kfN4NGYt59UYS3buEg5LfqRW4EhtDwB9kDyTjycYSTT+IYLUR9A14zaKrHoqgFJaXmu3LLSSsa7mcMdOQapqZ7rsE2NPm8l6U1W7Eat+h8xx4YQjMSXAaL0AT2ocl/fyRZ1hTOLP8KptAsNZzSlqAZWIgml83tFsIJsuHCHf9nYAwNN6WZ2ITmD9iIJneVdmpueP01QUUzutD0BZmlRWgmVqLJT73aqSGlfcNuYd10CebQjET3rjVo1mAnmkHZnLySKup70ZNFYrk+C01o7vWkNC1AM7AUzcfLfZ38hXzcS8qZk0ptbb1o3vmdZfaguYPOoIHhbqVOOMlWUs7otvj5RXc9MInGValu24wm2Uu4G2jA2z8/Y/Wy/Hc0uvh3HqxKnngVf5W+SnrQjHWMeLYATVz1KSztRAMwXksXsT0wjOaRP/5nDZohdAyNcA3ybrRJaYmdHjREwyhi82j2BXSH0MiwUSOjCQ03pVFaXNwkmngInUQDcPmb97OvPYAG0GhLaZpE8/eYZyO0Gw2Ad1ncZR/f+aAeWtAs9YwhCNBMZK9gtbZ2FkpdaGqc3ihuouY2gY3f76YeVAotaO71jCEAfzmSn51ipLupfXjD1Yamth18JK5SdMTNXAOauZ7uYP71Wdd3s8b5Ubq6VljWVz+JZyyNik9nY2g4w5VrtRKwvxZWczPtZK4/dFHUhkb/0bP4pdwt8qNpNOWl7lq11iytff6mL3nSerqjeUGvVn1o0hEh02b6x2QNtaApKyD+qh9ayYqkv/vr2NenJippbtaIRrK37ajaVaKFG0LjaLKjHNlyv8oRDdfCT5ppOO9xdDcu7TnXtPl0WWm6DDTGnS81AJCrDGYtQAPgLYMoG7I/pvikHnxSMP3wSeO7I07zcj4d8ovAetE0ElH1bvr60HQqOogmN3kFEA2iUew2JYgG0aiiCRENolGtnhANopGIV0SDaFTjGXMaRKMay+qTnBDNqaLJDSqfIRpEI4ypxgNGNIVoMk8V8yxH87/CBxEnOygFiOaYGGacQO+gw91uNM/6Ly6iKSi+EQ2iQTSIBtEgmraj2ZCN+CT9CVsb/KOvtKGoxHQlchKxKUODgSETiAYD0WAgGgxEg4FoMBANRseCVF/YHceIpisRzT0A6PlPa0rpne/7lNKV7/vJ8riV7/vJxMX4esheSSmlW38f/yQflfkXe+3werfILhr3AGD4FFNKp+x1iMba2C9K9mLWOU9Zn7THCoYw7Rff7yfjrQ+nL+52Ztj/K11R7q0Ov8Vbp9OREI2twaZ3fHKArenOoEl2BkjRZJeV9okAjQcAny5GkCw6DwDAubhw2V8RjeXhATghpXQVuFEODdukY4fmFwDAZUhIOAH4yUqaeW5ohBByBuBR+gbsYXIrh9kbAFsG9AUAIkoIGSAae2MLh7sbHKCB+z2atQfpQ0QWPylDU7CJG0Mz2220MQGAmNKzZIeft12x5SMam9u6LM0oRtNfpWgCyO1JwkUz2aEZs3f7AP2Ysn19IkRje/gAAOOn949oXOYpQTOG3DpTAgBf2Z4Qvz+geUiKqXWP0QoAwFvefYHdZraIxubYPYvRYzv/ZNAsvwHAMA73ZQXNo8nlwXs0WwcA/CnbsGRJM1uH9QmisT9IOgXuOodm6wLAZYLmLL/lIRdNulmkw9BkdtWaIZpOsAku2HNmng7RsGekfd1XT3Eejc+WEtx/REPJCACcUQAA93TtATgLQkI3qbYQTWfKm3EOTTrv9JnSK8jtB8ZNhCmldEPIhj4AQETfINnqcusAnCMa2yPOXO3zPBp6k6IJYb855Holg4ZS9mAel22qGB38GdHYHEGy4eMaAEYf0CQJ7HOS7XhPlNL4rtePhGgiSpMHNP5kGc5s9y1Y0lgfHkDPn079HqtB8mhYk/yZUrp1AQB6/rAHAPBOCQD0vCRIHs0avDH7UDepleAyCK57u3oK0Vgc2dUy32kBmq2768QlmX3db3P7rXxAkzbJPhNKD3be/4atpw5kwMkTOgePtAgNJU66+itgbJzRigrRsE91FpvDhv2nW4poOuEmDIKApE0eQimlmWVJm8wKJRIG6WM8i9dypf8KX4Ig+/DyTRgEL+kLN7kFYIgGQzkQDQaiwUA0GIgGA9FgIBoMDGU0cx8DoziWZWh8wMBQ3j4NAwPRYNSCJjMogWgwymKccQL/B0aognk36IJHAAAAAElFTkSuQmCC">
-  <div class="title">Production soudure<small>Département soudure – tableau de production</small></div>
+  <div class="title">Production soudure<small id="sub">Département soudure – tableau de production</small></div>
   <div class="kpis" id="kpis"></div>
   <div class="clock"><div class="t" id="time"></div><div class="d" id="date"></div></div>
 </header>
@@ -150,6 +161,12 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcAFrAuydjB-CQ
 const XLSX_URL = "Soudure_Production.xlsx";       // fichier Excel déposé dans le même dépôt GitHub
 const SHEET_NAME = "Dashboard Production v2";     // onglet à afficher
 const REFRESH_SECONDS = 60;
+/* Quart affiché selon l’heure (fuseau de Montréal) :
+   de 3 h 00 à 14 h 29 -> quart de jour ; de 14 h 30 à 2 h 59 -> quart de soir/nuit.
+   Pour forcer un quart (test) : ajouter ?quart=jour, ?quart=nuit ou ?quart=tous à l’adresse. */
+const DAY_START = 3*60;          // 3 h 00
+const NIGHT_START = 14*60+30;    // 14 h 30
+const TIMEZONE = "America/Toronto";
 
 /* Instantané de démonstration, utilisé tant que le lien CSV n’est pas configuré */
 let DATA = [{"name": "Steve", "shift": "jour", "status": "En marche", "cur": {"project": "SVL Pecos", "cage": "176820-1 à 8 · Spool #4 p.14", "op": "Assemblage pipings", "qty": 8, "status": "En marche"}, "next": [{"project": "Daikin 2 QTS", "cage": "176270-4-5", "op": "Assemblage pipings", "qty": null, "status": ""}, {"project": "Hoffman Hydronics", "cage": "177 863-3 · Spool", "op": "Assemblage pipings", "qty": 31, "status": "Attente matériel", "note": "Livraison fittings prévue 1 déc."}], "quote": {"project": "SVL Pecos", "drawing": "173758-1", "note": ""}}, {"name": "Mikaël", "shift": "jour", "status": "En marche", "cur": {"project": "SVL Pecos", "cage": "176820-1 à 8 · Spool #4 p.14", "op": "Assemblage pipings", "qty": 8, "status": "En marche"}, "next": [{"project": "", "cage": "", "op": "", "qty": null, "status": ""}, {"project": "", "cage": "", "op": "", "qty": null, "status": ""}], "quote": {"project": "SVL MSK2", "drawing": "175447-3", "note": ""}}, {"name": "Alex", "shift": "jour", "status": "En marche", "cur": {"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication panneaux", "qty": 12, "status": "En marche"}, "next": [{"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication supports", "qty": 24, "status": ""}, {"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication Skid complet", "qty": 12, "status": ""}], "quote": {"project": "Daikin 2 QTS", "drawing": "176269-1", "note": ""}}, {"name": "Robert", "shift": "jour", "status": "En marche", "cur": {"project": "Établis Assemblage Système", "cage": "", "op": "Fabrication", "qty": 3, "status": "En marche", "date": "27 nov."}, "next": [{"project": "SVL CB Tundra", "cage": "", "op": "Fabrication bases", "qty": 12, "status": "Attente matériel", "note": "Livraison métal prévue 23 nov."}, {"project": "Daikin Edge Connex", "cage": "", "op": "", "qty": null, "status": ""}], "quote": {"project": "Daikin Edge Connex", "drawing": "174778-1", "note": ""}}, {"name": "Fester", "shift": "nuit", "status": "En marche", "cur": {"project": "Daikin 2 QTS", "cage": "176270-2-3", "op": "Soudage pipings", "qty": null, "status": "En marche", "date": "23 nov."}, "next": [{"project": "SVL Pecos", "cage": "176818-1 à 8 · Spool #2 p.13", "op": "Soudage pipings", "qty": 8, "status": "", "date": "23 nov."}, {"project": "SVL Pecos", "cage": "176819-1 à 8             SPOOL#2  p.13", "op": "Soudage pipings", "qty": 8, "status": "", "date": "24 nov."}], "quote": {"project": "HTS Flapping Airplaines", "drawing": "179124-1", "note": ""}}, {"name": "Fang", "shift": "nuit", "status": "En marche", "cur": {"project": "SVL Pecos", "cage": "176 820-1 à 8 · Spool #3 p.14", "op": "", "qty": 16, "status": "En marche", "date": "23 nov."}, "next": [{"project": "SVL Pecos", "cage": "176819-1 à 8      SPOOL#3  p.14", "op": "Soudage pipings", "qty": 8, "status": "", "date": "23 nov."}, {"project": "", "cage": "", "op": "", "qty": null, "status": ""}], "quote": {"project": "SVL CB Tundra", "drawing": "173266-1", "note": ""}}, {"name": "Jeremy", "shift": "nuit", "status": "En marche", "cur": {"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication panneaux", "qty": 12, "status": "En marche"}, "next": [{"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication supports", "qty": 24, "status": ""}, {"project": "HTS Flapping Airplaines", "cage": "", "op": "Fabrication Skid complet", "qty": 12, "status": ""}], "quote": {"project": "SVL Pecos", "drawing": "173758-1", "note": "Base #45 Next"}}, {"name": "Sam", "shift": "nuit", "status": "Absent", "cur": {"project": "", "cage": "", "op": "", "qty": null, "status": "Absent", "note": "Date de retour à déterminer"}, "next": [{"project": "", "cage": "", "op": "", "qty": null, "status": ""}, {"project": "", "cage": "", "op": "", "qty": null, "status": ""}], "quote": {"project": "", "drawing": "", "note": ""}}];
@@ -218,16 +235,32 @@ function rowEl(e){
 }
 function kpi(cls,n,label){const k=el('div','kpi '+cls);k.append(el('b',null,String(n)),el('span',null,label));return k;}
 
+function nowParts(){
+  const p=new Intl.DateTimeFormat('en-CA',{timeZone:TIMEZONE,hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date());
+  return {h:(+p.find(x=>x.type==='hour').value)%24, m:+p.find(x=>x.type==='minute').value};
+}
+function activeShift(){
+  const q=new URLSearchParams(location.search).get('quart');
+  if(q==='jour'||q==='nuit'||q==='tous') return q;
+  const {h,m}=nowParts(), mins=h*60+m;
+  return (mins>=DAY_START&&mins<NIGHT_START)?'jour':'nuit';
+}
+let shownShift='';
 function render(){
-  const pres=DATA.filter(e=>kind(e.status)!=='abs');
-  const abs=DATA.length-pres.length;
-  const run=DATA.filter(e=>kind(e.status)==='ok').length;
-  const all=DATA.flatMap(e=>[e.cur,...e.next]);
+  shownShift=activeShift();
+  let SHOWN=shownShift==='tous'?DATA:DATA.filter(e=>e.shift===shownShift);
+  if(!SHOWN.length) SHOWN=DATA;
+  document.getElementById('sub').textContent=
+    shownShift==='jour'?'Quart de jour · 3 h à 14 h 29':shownShift==='nuit'?'Quart de soir · 14 h 30 à 2 h 59':'Tous les quarts';
+  const pres=SHOWN.filter(e=>kind(e.status)!=='abs');
+  const abs=SHOWN.length-pres.length;
+  const run=SHOWN.filter(e=>kind(e.status)==='ok').length;
+  const all=SHOWN.flatMap(e=>[e.cur,...e.next]);
   const wait=all.filter(j=>kind(j.status)==='wait').length;
   const blk=all.filter(j=>kind(j.status)==='block').length;
   const nonext=pres.filter(e=>!e.next[0].project).length;
   const K=document.getElementById('kpis'); K.replaceChildren(
-    kpi('k-pres',pres.length+' / '+DATA.length,'Présents'),
+    kpi('k-pres',pres.length+' / '+SHOWN.length,'Présents'),
     kpi(abs?'':'k-zero',abs,'Absents'),
     kpi(run?'k-ok':'k-zero',run,'Jobs en marche'),
     kpi(wait?'k-wait':'k-zero',wait,'Attente matériel'),
@@ -236,8 +269,10 @@ function render(){
   const head=el('div','row head');
   [['EMPLOYÉ','hd-emp',''],['JOB EN COURS','hd-cur','▶'],['JOB SUIVANTE #1','hd-n1','⏭'],['JOB SUIVANTE #2','hd-n2','⏭']]
     .forEach(([txt,cls,ic])=>head.append(el('div','hd '+cls,(ic?ic+'  ':'')+txt)));
-  document.getElementById('tbl').replaceChildren(head,...DATA.map(rowEl));
-  renderQuotes();
+  const tbl=document.getElementById('tbl');
+  tbl.classList.toggle('big',SHOWN.length<=5);
+  tbl.replaceChildren(head,...SHOWN.map(rowEl));
+  renderQuotes(SHOWN);
 }
 
 /* ---------- lecture de la feuille Excel / Google Sheets ---------- */
@@ -324,9 +359,9 @@ function fit(){
     while(p.scrollWidth>p.clientWidth+1&&s>min){s-=1;p.style.fontSize=s+'px';}
   });
 }
-function renderQuotes(){
+function renderQuotes(list){
   const seen=new Map();
-  for(const e of DATA){
+  for(const e of list){
     const q=e.quote; if(!q.project&&!q.drawing) continue;
     const key=(q.project+'|'+q.drawing).toLowerCase();
     if(!seen.has(key)) seen.set(key,{project:q.project,drawing:q.drawing,notes:[]});
@@ -345,8 +380,9 @@ function renderQuotes(){
 }
 function tick(){
   const now=new Date();
-  document.getElementById('time').textContent=now.toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit',hour12:false});
-  document.getElementById('date').textContent=now.toLocaleDateString('fr-CA',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('time').textContent=now.toLocaleTimeString('fr-CA',{timeZone:TIMEZONE,hour:'2-digit',minute:'2-digit',hour12:false});
+  document.getElementById('date').textContent=now.toLocaleDateString('fr-CA',{timeZone:TIMEZONE,weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  if(activeShift()!==shownShift){ render(); fit(); }
   const hm=lastOk.toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit',hour12:false});
   const st=document.getElementById('stale');
   if(live){
