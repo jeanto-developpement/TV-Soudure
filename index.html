@@ -35,20 +35,21 @@ body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);o
   display:grid;grid-template-rows:auto 1fr auto;gap:.7rem;padding:.8rem 1rem .5rem}
 
 /* ---------- barre du haut ---------- */
-.top{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:1.4rem;
+.top{display:grid;grid-template-columns:auto minmax(13rem,1fr) auto auto;align-items:center;gap:1.4rem;
   background:var(--panel);border:1px solid var(--line);border-radius:.5rem;padding:.55rem 1.1rem}
 .logo{height:4.2rem;width:auto;display:block;background:#fff;border-radius:.3rem;padding:.2rem .5rem}
 .title{font-family:var(--display);font-weight:700;font-size:2.35rem;line-height:1;letter-spacing:.01em}
 .title small{display:block;white-space:nowrap;font-family:var(--body);font-weight:500;font-size:1.05rem;color:var(--muted);margin-top:.3rem;letter-spacing:0}
-.kpis{display:flex;gap:.6rem}
-.kpi{display:flex;align-items:center;gap:.6rem;min-width:9.2rem;padding:.35rem .8rem;border-radius:.4rem;
+.kpis{display:flex;gap:.45rem}
+.kpi{display:flex;align-items:center;gap:.4rem;min-width:0;padding:.3rem .6rem;border-radius:.4rem;
   background:var(--panel2);border:1px solid var(--line)}
-.kpi b{font-family:var(--display);font-weight:700;font-size:2.9rem;line-height:1;min-width:1.5ch;text-align:center;white-space:nowrap}
-.kpi span{font-size:1.05rem;line-height:1.15;font-weight:500}
+.kpi b{font-family:var(--display);font-weight:700;font-size:2.5rem;line-height:1;min-width:1.2ch;text-align:center;white-space:nowrap}
+.kpi span{font-size:.95rem;line-height:1.1;font-weight:500}
 .kpi.k-pres{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
 .kpi.k-ok{background:var(--ok);border-color:var(--ok);color:var(--ok-ink)}
 .kpi.k-wait{background:var(--wait);border-color:var(--wait);color:var(--wait-ink)}
 .kpi.k-block{background:var(--block);border-color:var(--block);color:var(--block-ink)}
+.kpi.k-assign{background:#6A4C93;border-color:#6A4C93;color:#fff}
 .kpi.k-zero{background:var(--panel2);border-color:var(--line);color:var(--muted)}
 .kpi.k-flag{background:var(--panel2);border:2px dashed var(--wait);color:var(--ink)}
 .clock{text-align:right;font-family:var(--display);font-weight:700}
@@ -79,9 +80,13 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:.9rem;min-height
 .st{font-size:.95rem;font-weight:700;padding:.12rem .6rem;border-radius:99rem;white-space:nowrap;display:inline-flex;gap:.35rem;align-items:center;background:#fff;color:#333}
 .st::before{content:"";width:.7rem;height:.7rem;border-radius:50%;background:currentColor}
 .st-ok{background:#C6EFCE;color:#006100}.st-wait{background:#FFEB9C;color:#9C5700}
-.st-block{background:#FFC7CE;color:#9C0006}.st-done{background:#D9D9D9;color:#404040}.st-abs{background:#fff;color:#A82424}
+.st-prio{background:#FFD9C7;color:#B33A00}
+.st-prio::before{content:"🔥";width:auto;height:auto;background:none;font-size:.9em}
+.blk.prio{box-shadow:inset 0 0 0 4px #C00000}
+.st-block{background:#FFC7CE;color:#9C0006}.st-done{background:#D9D9D9;color:#404040}.st-abs{background:#fff;color:#4B5563}
 .late{background:#C00000;color:#fff;padding:.05rem .55rem;border-radius:.3rem;font-weight:700;overflow:visible!important}
-.note{font-weight:600;color:var(--warn-text)}
+.dt{flex:none}
+.v>.note{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;line-height:1.1;font-size:.95em;font-weight:600;color:var(--warn-text)}
 
 /* un seul quart affiché : plus de place, donc texte plus grand */
 .tbl.big .pn{font-size:1.7rem}
@@ -103,10 +108,12 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:.9rem;min-height
 .blk.flag{background:repeating-linear-gradient(135deg,transparent 0 .6rem,color-mix(in srgb,var(--wait) 16%,transparent) .6rem 1.2rem)}
 .blk.flag .pn{color:var(--warn-text);font-size:1.2rem}
 
-/* employé absent : toute la ligne en rouge, comme dans Excel */
-.row.abs .who,.row.abs .blk{background:#E04B4B;color:#fff}
-.row.abs .k,.row.abs .v,.row.abs .pn,.row.abs .note,.row.abs .who .nm{color:#fff}
-.row.abs .st{background:#fff;color:#A82424}
+/* employé absent : bande grise, comme la légende du fichier */
+.row.abs .who{background:#6B7782;color:#fff}
+.row.abs .blk{background:#E3E6E9;color:#4B5563}
+.row.abs .k,.row.abs .v,.row.abs .pn,.row.abs .note{color:#4B5563}
+.row.abs .who .nm{color:#fff}
+.row.abs .st{background:#fff;color:#4B5563}
 
 /* ---------- panneau des quotes ---------- */
 .side{display:flex;flex-direction:column;gap:.55rem;min-height:0}
@@ -196,7 +203,7 @@ function isLate(label){
   const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   return new Date(now.getFullYear(),i,+m[1])<today;
 }
-const kind=s=>/absent/i.test(s)?'abs':/bloqu/i.test(s)?'block':/attente/i.test(s)?'wait':/marche/i.test(s)?'ok':/termin/i.test(s)?'done':'';
+const kind=s=>/absent/i.test(s)?'abs':/bloqu/i.test(s)?'block':/attente/i.test(s)?'wait':/prioritaire/i.test(s)?'prio':/marche/i.test(s)?'ok':/termin/i.test(s)?'done':'';
 const SHORT={wait:'Attente'};
 function line(label){
   const row=el('div','ln'), v=el('div','v');
@@ -209,6 +216,7 @@ function block(j,mode,opts){
   const empty=!j.project;
   const flag=empty&&next&&opts.flagEmpty;
   if(flag) b.classList.add('flag');
+  if(k==='prio') b.classList.add('prio');
   // Projet + statut
   const l1=line('Projet :'); l1.v.append(el('span','pn',j.project||(flag?'Aucun job suivant':'')));
   if(j.status&&(mode==='cur'||j.project)){
@@ -216,7 +224,7 @@ function block(j,mode,opts){
     l1.v.append(el('span','st st-'+(k||'ok'),label));
   }
   // Cage
-  const l2=line('Cage :'); if(j.cage) l2.v.append(el('span',null,j.cage));
+  const l2=line('Job/Quote :'); if(j.cage) l2.v.append(el('span',null,j.cage));
   // Opération + quantité
   const l3=line('Opération :'); if(j.op) l3.v.append(el('span',null,j.op));
   if(j.qty) l3.v.append(el('span','qty','Qté : '+j.qty));
@@ -224,7 +232,7 @@ function block(j,mode,opts){
   const l4=line(next?'Début prévu :':'Fin prévue :');
   if(j.date){
     const late=!next&&isLate(j.date)&&k!=='done'&&!opts.absent;
-    l4.v.append(el('span',late?'late':null,j.date+(late?' – en retard':'')));
+    l4.v.append(el('span',late?'late dt':'dt',j.date+(late?' – en retard':'')));
   }
   if(j.note) l4.v.append(el('span','note',j.note));
   b.append(l1.row,l2.row,l3.row,l4.row);
@@ -292,6 +300,7 @@ function render(){
   const K=document.getElementById('kpis'); K.replaceChildren(
     kpi('k-pres',pres.length+' / '+SHOWN.length,'Présents'),
     kpi(abs?'':'k-zero',abs,'Absents'),
+    ...(toAssign!==null?[kpi(toAssign?'k-assign':'k-zero',toAssign,'À assigner')]:[]),
     kpi(run?'k-ok':'k-zero',run,'Jobs en marche'),
     kpi(wait?'k-wait':'k-zero',wait,'Attente matériel'),
     kpi(blk?'k-block':'k-zero',blk,'Bloqués'),
@@ -338,7 +347,7 @@ function asDate(s){                       // retourne un libellé de date court,
 }
 /* Lecture robuste : les colonnes sont repérées par les titres de la ligne d’en-tête
    (JOB EN COURS, JOB SUIVANTE #1, #2, QUOTE) et chaque valeur par son libellé (Projet, Cage, Opération, Date, Note). */
-let lastDebug={};
+let lastDebug={}, toAssign=null;
 function fromRows(R){
   const cellAt=(r,c)=>((R[r]||[])[c]||'');
   // 1) ligne d’en-tête et colonnes des blocs
@@ -354,6 +363,14 @@ function fromRows(R){
     if(starts.cur!==undefined) hr=r;
   }
   if(hr<0) return [];
+  toAssign=null;
+  for(let r=0;r<hr&&toAssign===null;r++){
+    (R[r]||[]).forEach((v,c)=>{
+      if(toAssign===null&&/assigner/i.test(clean(v))){
+        for(const cc of [c,c+1]){ const m=clean(cellAt(r+1,cc)).match(/^\d+/); if(m){ toAssign=+m[0]; break; } }
+      }
+    });
+  }
   const W=Math.max(...R.map(r=>r.length),16);
   const reg={cur:[starts.cur,starts.n1??starts.cur+4],n1:[starts.n1,starts.n2??starts.n1+4],
              n2:[starts.n2,starts.q??W],q:[starts.q??W,W]};
@@ -371,8 +388,8 @@ function fromRows(R){
         if(!cells.length) continue;
         const lab=cells[0], rest=cells.slice(1);
         if(/^projet/i.test(lab)){
-          rest.forEach(s=>{ if(/(marche|attente|bloqu|termin|absent)/i.test(s)) o.status=dropEmoji(s); else if(!o.project) o.project=s; });
-        }else if(/cage|identification/i.test(lab)){ o.cage=rest[0]||''; }
+          rest.forEach(s=>{ if(/(marche|attente|bloqu|termin|absent|prioritaire)/i.test(s)) o.status=dropEmoji(s); else if(!o.project) o.project=s; });
+        }else if(/cage|identification|num[ée]ro|job\s*\/\s*quote/i.test(lab)){ o.cage=rest[0]||''; }
         else if(/^op[ée]ration/i.test(lab)){
           rest.forEach(s=>{ const m=s.match(/^(?:qty|qté|qte)\s*:?\s*(\d+)/i)||s.match(/^(\d+)\s*x?$/);
             if(m) o.qty=+m[1]; else if(!o.op) o.op=s; });
@@ -400,7 +417,7 @@ function fromRows(R){
     const sp=raw.search(/[\p{L}\p{N}]/u);
     out.push({name:raw.slice(sp>=0?sp:0), shift:raw.includes('🌙')?'nuit':'jour', status:cur.status, cur, next:[n1,n2], quote});
   });
-  lastDebug={entete:hr+1,colonnes:starts,lignes:R.length,employes:out.length};
+  lastDebug={entete:hr+1,colonnes:starts,lignes:R.length,employes:out.length,aAssigner:toAssign};
   return out;
 }
 async function getText(url){
@@ -434,7 +451,7 @@ function fit(){
   document.querySelectorAll('.pn').forEach(p=>{
     p.style.fontSize='';
     let s=parseFloat(getComputedStyle(p).fontSize); const min=s*0.55;
-    while(p.scrollWidth>p.clientWidth+1&&s>min){s-=1;p.style.fontSize=s+'px';}
+    while(p.scrollWidth>p.clientWidth&&s>min){s-=0.5;p.style.fontSize=s+'px';}
   });
 }
 function renderQuotes(list){
